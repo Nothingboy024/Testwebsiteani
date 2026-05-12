@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>Admin Panel</header>
+
+<div style="padding:20px;max-width:600px;margin:auto">
+
+  <div id="loginBox">
+    <input type="password" id="pass" placeholder="Enter password">
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div id="adminBox" style="display:none">
+    <h3>Add Episode Stream Link</h3>
+
+    <input id="titleName" placeholder="Anime Title (exact)">
+    <input id="epNum" placeholder="Episode Number">
+    <input id="streamUrl" placeholder="Stream URL">
+
+    <button onclick="saveEpisode()">Save Episode</button>
+
+    <h3>Saved Episodes</h3>
+    <div id="savedList"></div>
+  </div>
+
+</div>
+
+<script>
+const PASSWORD = "admin123";
+
+function login(){
+  if(pass.value === PASSWORD){
+    loginBox.style.display="none";
+    adminBox.style.display="block";
+    loadSaved();
+  } else alert("Wrong password");
+}
+
+function saveEpisode(){
+  const title = titleName.value.trim().toLowerCase();
+  const ep = epNum.value;
+  const url = streamUrl.value;
+
+  let data = JSON.parse(localStorage.getItem('animeEpisodes')||"{}");
+  if(!data[title]) data[title] = {};
+  data[title][ep] = url;
+
+  localStorage.setItem('animeEpisodes', JSON.stringify(data));
+  alert("Saved!");
+  loadSaved();
+}
+
+function loadSaved(){
+  let data = JSON.parse(localStorage.getItem('animeEpisodes')||"{}");
+  savedList.innerHTML="";
+  for(let t in data){
+    savedList.innerHTML += `<h4>${t}</h4>`;
+    for(let ep in data[t]){
+      savedList.innerHTML += `Ep ${ep} → ${data[t][ep]}<br>`;
+    }
+    savedList.innerHTML += "<hr>";
+  }
+}
+</script>
+
+</body>
+</html>
